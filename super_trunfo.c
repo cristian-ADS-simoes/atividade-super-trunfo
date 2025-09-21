@@ -39,7 +39,7 @@ int main() {
     scanf("%s", codigo1); // Para strings (char[]), não usamos o &
 
     printf("Digite o Nome da Cidade: ");
-    scanf("%s", nomeCidade1);
+    scanf(" %[^\n]", nomeCidade1);
 
     printf("Digite a População: ");
     scanf("%d", &populacao1);
@@ -68,7 +68,7 @@ int main() {
     scanf("%s", codigo2);
 
     printf("Digite o Nome da Cidade: ");
-    scanf("%s", nomeCidade2);
+    scanf(" %[^\n]", nomeCidade2);
 
     printf("Digite a População: ");
     scanf("%d", &populacao2);
