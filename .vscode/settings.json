@@ -1,6 +1,9 @@
 {
     "files.associations": {
-        "TREINANDO_AULAS.C": "cpp"
+        "TREINANDO_AULAS.C": "cpp",
+        "TREINANDO_AULAS_2.C": "cpp",
+        "TREINANDO_AULAS_2_1.C": "cpp",
+        "TREINANDO_AULAS_2_1_1.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
