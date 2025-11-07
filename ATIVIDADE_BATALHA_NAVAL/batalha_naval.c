@@ -2,44 +2,31 @@
 #include <stdlib.h> // Para EXIT_SUCCESS
 
 // --- Constantes Globais ---
-// Definir constantes torna o código mais legível e fácil de modificar.
-
-// Requisito: Tabuleiro 10x10
 #define TAMANHO_TABULEIRO 10 
-// Requisito: Navios de tamanho fixo 3
 #define TAMANHO_NAVIO 3    
 
 // Valores para representar o estado de cada célula
 #define AGUA 0
 #define NAVIO 3
 
-// Constantes para orientação (mais legível do que usar 0 e 1)
+// --- ALTERAÇÃO NÍVEL AVENTUREIRO ---
+// Adicionamos as novas orientações diagonais
 #define HORIZONTAL 0
 #define VERTICAL 1
+#define DIAGONAL_PRINCIPAL 2   // (Ex: [0][0], [1][1], [2][2])
+#define DIAGONAL_SECUNDARIA 3  // (Ex: [0][9], [1][8], [2][7])
 
 // --- Protótipos das Funções ---
-// Declarar as funções aqui permite que a 'main' as chame,
-// mesmo que elas sejam definidas mais abaixo no arquivo.
-
-/**
- * @brief Inicializa o tabuleiro com 'AGUA' (0).
- * @param tab O tabuleiro (matriz 2D) a ser inicializado.
- */
 void inicializarTabuleiro(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]);
-
-/**
- * @brief Exibe o estado atual do tabuleiro no console.
- * @param tab O tabuleiro (matriz 2D) a ser exibido.
- */
 void exibirTabuleiro(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]);
 
 /**
- * @brief Tenta posicionar um navio no tabuleiro.
+ * @brief Tenta posicionar um navio no tabuleiro (ATUALIZADO PARA DIAGONAIS).
  * @param tab O tabuleiro (matriz 2D).
  * @param navio O vetor (array 1D) que representa o navio (ex: [3, 3, 3]).
  * @param linha A linha inicial para posicionar o navio (0 a 9).
  * @param coluna A coluna inicial para posicionar o navio (0 a 9).
- * @param orientacao A orientação (HORIZONTAL ou VERTICAL).
+ * @param orientacao A orientação (HORIZONTAL, VERTICAL, DIAGONAL_PRINCIPAL, DIAGONAL_SECUNDARIA).
  * @return 1 (true) se o navio foi posicionado com sucesso, 0 (false) caso contrário.
  */
 int posicionarNavio(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], 
@@ -50,157 +37,161 @@ int posicionarNavio(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO],
 int main() {
     
     // 1. Represente o Tabuleiro:
-    // Cria a matriz 10x10 na memória.
     int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
 
-    // 2. Posicione os Navios (vetores unidimensionais):
-    // Como pedido na Dica, criamos um "protótipo" de navio.
-    // Todos os navios de tamanho 3 serão cópias deste.
+    // 2. Posicione os Navios (vetor protótipo):
     int navio_prototipo[TAMANHO_NAVIO] = {NAVIO, NAVIO, NAVIO};
 
     // Inicializa o tabuleiro com 'AGUA' (0)
     inicializarTabuleiro(tabuleiro);
 
-    // --- Posicionamento dos Navios (Hardcoded) ---
-    // Requisito: As coordenadas são definidas diretamente no código.
+    // --- REQUISITO: Posicionar Quatro Navios ---
+    // (Coordenadas definidas diretamente no código)
 
-    // Navio 1: Horizontal
-    // (linha 2, coluna 2) -> ocupará (2,2), (2,3), (2,4)
-    int linha_navio1 = 2;
-    int coluna_navio1 = 2;
-    int orientacao_navio1 = HORIZONTAL;
-    posicionarNavio(tabuleiro, navio_prototipo, linha_navio1, coluna_navio1, orientacao_navio1);
+    // Navio 1: Horizontal (como no nível anterior)
+    // (linha 0, coluna 0) -> ocupará (0,0), (0,1), (0,2)
+    posicionarNavio(tabuleiro, navio_prototipo, 0, 0, HORIZONTAL);
 
-    // Navio 2: Vertical
-    // (linha 4, coluna 5) -> ocupará (4,5), (5,5), (6,5)
-    int linha_navio2 = 4;
-    int coluna_navio2 = 5;
-    int orientacao_navio2 = VERTICAL;
-    posicionarNavio(tabuleiro, navio_prototipo, linha_navio2, coluna_navio2, orientacao_navio2);
+    // Navio 2: Vertical (como no nível anterior)
+    // (linha 2, coluna 0) -> ocupará (2,0), (3,0), (4,0)
+    posicionarNavio(tabuleiro, navio_prototipo, 2, 0, VERTICAL);
+
+    // Navio 3: Diagonal Principal
+    // (linha 2, coluna 2) -> ocupará (2,2), (3,3), (4,4)
+    posicionarNavio(tabuleiro, navio_prototipo, 2, 2, DIAGONAL_PRINCIPAL);
+
+    // Navio 4: Diagonal Secundária
+    // (linha 0, coluna 9) -> ocupará (0,9), (1,8), (2,7)
+    posicionarNavio(tabuleiro, navio_prototipo, 0, 9, DIAGONAL_SECUNDARIA);
 
     /* // ---- EXEMPLO DE VALIDAÇÃO (Teste) ----
-    // Tente descomentar este bloco. O programa não deve permitir
-    // a sobreposição no navio 1.
+    // Tente descomentar este bloco. Deve falhar por sobreposição com o Navio 4.
     
-    int linha_navio3 = 2;
-    int coluna_navio3 = 3; // Sobrepõe o navio 1
-    int orientacao_navio3 = VERTICAL;
-    if (!posicionarNavio(tabuleiro, navio_prototipo, linha_navio3, coluna_navio3, orientacao_navio3)) {
-        printf("Falha ao posicionar Navio 3: Sobreposição detectada!\n\n");
-    }
-    
-    // Tente descomentar este bloco. O programa não deve permitir
-    // sair do tabuleiro.
-    
-    int linha_navio4 = 9;
-    int coluna_navio4 = 0; // Tenta colocar em (9,0), (10,0), (11,0)
-    int orientacao_navio4 = VERTICAL;
-    if (!posicionarNavio(tabuleiro, navio_prototipo, linha_navio4, coluna_navio4, orientacao_navio4)) {
-        printf("Falha ao posicionar Navio 4: Fora dos limites!\n\n");
+    int navio5_linha = 2;
+    int navio5_coluna = 7; // Sobrepõe o (2,7) do Navio 4
+    if (!posicionarNavio(tabuleiro, navio_prototipo, navio5_linha, navio5_coluna, HORIZONTAL)) {
+        printf("Falha ao posicionar Navio 5: Sobreposição detectada!\n\n");
     }
     */
 
 
     // 3. Exiba o Tabuleiro:
-    printf("### Batalha Naval - Tabuleiro Inicial ###\n\n");
+    printf("### Batalha Naval - Nível Aventureiro (Diagonais) ###\n\n");
     exibirTabuleiro(tabuleiro);
 
-    return EXIT_SUCCESS; // Indica que o programa terminou com sucesso
+    return EXIT_SUCCESS;
 }
 
 
 // --- Implementação das Funções ---
 
 /**
- * @brief Inicializa o tabuleiro com 'AGUA' (0).
+ * @brief Inicializa o tabuleiro com 'AGUA' (0). (Sem alterações)
  */
 void inicializarTabuleiro(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
-    // Loop aninhado para percorrer cada célula da matriz
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
-            // Define o valor padrão 'AGUA'
             tab[i][j] = AGUA;
         }
     }
 }
 
 /**
- * @brief Exibe o estado atual do tabuleiro no console.
+ * @brief Exibe o estado atual do tabuleiro no console. (Sem alterações)
  */
 void exibirTabuleiro(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
-    // Adiciona cabeçalho de colunas para facilitar a leitura
     printf("   "); // Espaço para o cabeçalho das linhas
     for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
-        printf("%d ", j);
+        // Imprime cabeçalho de coluna formatado
+        printf("%d ", j); 
     }
     printf("\n");
     
-    printf("   --------------------\n");
+    printf("   --------------------\n"); // 10 * 2 = 20 traços
 
-    // Loop aninhado para exibir cada célula
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
-        // Adiciona cabeçalho da linha
-        printf("%d | ", i); 
+        printf("%d | ", i); // Cabeçalho da linha
         
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
-            // Imprime o valor (0 ou 3) e um espaço (Dica)
             printf("%d ", tab[i][j]);
         }
-        // Pula para a próxima linha ao final de cada linha da matriz
         printf("\n");
     }
 }
 
 /**
- * @brief Tenta posicionar um navio no tabuleiro.
+ * @brief Tenta posicionar um navio no tabuleiro (ATUALIZADO PARA DIAGONAIS).
  */
 int posicionarNavio(int tab[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], 
                      int navio[TAMANHO_NAVIO], 
                      int linha, int coluna, int orientacao) {
 
-    // --- REQUISITO: VALIDAÇÃO DE LIMITES ---
-    if (orientacao == HORIZONTAL) {
-        // Verifica se o navio "cai" para fora da borda direita
-        if (coluna + TAMANHO_NAVIO > TAMANHO_TABULEIRO) {
-            return 0; // Falha: Fora dos limites
-        }
-    } else if (orientacao == VERTICAL) {
-        // Verifica se o navio "cai" para fora da borda inferior
-        if (linha + TAMANHO_NAVIO > TAMANHO_TABULEIRO) {
-            return 0; // Falha: Fora dos limites
-        }
-    } else {
-        return 0; // Falha: Orientação inválida
-    }
-    
-    // Verifica se as coordenadas iniciais são válidas (redundante mas seguro)
+    // --- REQUISITO: VALIDAÇÃO DE LIMITES (Agora com diagonais) ---
+    // Checagem inicial de coordenadas (redundante, mas boa prática)
     if (linha < 0 || linha >= TAMANHO_TABULEIRO || coluna < 0 || coluna >= TAMANHO_TABULEIRO) {
         return 0; // Falha: Posição inicial fora do tabuleiro
     }
 
-    // --- REQUISITO: VALIDAÇÃO DE SOBREPOSIÇÃO ---
-    // (Simplificada, como pedido: apenas verificamos antes de colocar)
+    // Checagem de limites com base na orientação
+    switch (orientacao) {
+        case HORIZONTAL:
+            // Verifica se o navio "cai" para fora da borda direita
+            if (coluna + TAMANHO_NAVIO > TAMANHO_TABULEIRO) return 0;
+            break;
+        case VERTICAL:
+            // Verifica se o navio "cai" para fora da borda inferior
+            if (linha + TAMANHO_NAVIO > TAMANHO_TABULEIRO) return 0;
+            break;
+        case DIAGONAL_PRINCIPAL:
+            // Verifica se "cai" para fora da borda inferior OU direita
+            if (linha + TAMANHO_NAVIO > TAMANHO_TABULEIRO || 
+                coluna + TAMANHO_NAVIO > TAMANHO_TABULEIRO) return 0;
+            break;
+        case DIAGONAL_SECUNDARIA:
+            // Verifica se "cai" para fora da borda inferior OU esquerda
+            // (coluna - (TAMANHO_NAVIO - 1)) deve ser >= 0
+            if (linha + TAMANHO_NAVIO > TAMANHO_TABULEIRO || 
+                coluna - (TAMANHO_NAVIO - 1) < 0) return 0;
+            break;
+        default:
+            return 0; // Falha: Orientação inválida
+    }
+
+    // --- REQUISITO: VALIDAÇÃO DE SOBREPOSIÇÃO (Agora com diagonais) ---
     // Precisamos checar se *alguma* das posições futuras já está ocupada.
     for (int i = 0; i < TAMANHO_NAVIO; i++) {
-        if (orientacao == HORIZONTAL) {
-            if (tab[linha][coluna + i] == NAVIO) {
-                return 0; // Falha: Sobreposição detectada
-            }
-        } else { // VERTICAL
-            if (tab[linha + i][coluna] == NAVIO) {
-                return 0; // Falha: Sobreposição detectada
-            }
+        switch (orientacao) {
+            case HORIZONTAL:
+                if (tab[linha][coluna + i] == NAVIO) return 0; // Falha: Sobreposição
+                break;
+            case VERTICAL:
+                if (tab[linha + i][coluna] == NAVIO) return 0; // Falha: Sobreposição
+                break;
+            case DIAGONAL_PRINCIPAL:
+                if (tab[linha + i][coluna + i] == NAVIO) return 0; // Falha: Sobreposição
+                break;
+            case DIAGONAL_SECUNDARIA:
+                if (tab[linha + i][coluna - i] == NAVIO) return 0; // Falha: Sobreposição
+                break;
         }
     }
 
-    // --- POSICIONAMENTO ---
+    // --- POSICIONAMENTO (Agora com diagonais) ---
     // Se passou em todas as validações, podemos posicionar o navio.
-    // Dica: "copiando o valor 3 de cada posição do vetor do navio"
     for (int i = 0; i < TAMANHO_NAVIO; i++) {
-        if (orientacao == HORIZONTAL) {
-            tab[linha][coluna + i] = navio[i]; // Copia o valor (3) do vetor para a matriz
-        } else { // VERTICAL
-            tab[linha + i][coluna] = navio[i]; // Copia o valor (3) do vetor para a matriz
+        switch (orientacao) {
+            case HORIZONTAL:
+                tab[linha][coluna + i] = navio[i];
+                break;
+            case VERTICAL:
+                tab[linha + i][coluna] = navio[i];
+                break;
+            case DIAGONAL_PRINCIPAL:
+                tab[linha + i][coluna + i] = navio[i];
+                break;
+            case DIAGONAL_SECUNDARIA:
+                tab[linha + i][coluna - i] = navio[i];
+                break;
         }
     }
 
